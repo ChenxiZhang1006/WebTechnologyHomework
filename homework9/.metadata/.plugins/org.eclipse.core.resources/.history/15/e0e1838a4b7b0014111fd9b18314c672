@@ -1,0 +1,148 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/bgimg"
+    tools:context="com.example.hw9.MainActivity" >
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="16dp"
+        android:text="Search Your Property Here"
+        android:textColor="#FFFFFF"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/title"
+        android:layout_below="@+id/title"
+        android:layout_marginTop="14dp"
+        android:text="Address*:"
+        android:textColor="#FFFFFF"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/editAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/address"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/address"
+        android:ems="10" />
+
+    <TextView
+        android:id="@+id/textAddrAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/editAddress"
+        android:layout_alignRight="@+id/editAddress"
+        android:layout_below="@+id/editAddress"
+        android:text="This filed is required."
+        android:textColor="#FF0000"
+        android:visibility="invisible"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/city"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textAddrAlarm"
+        android:layout_below="@+id/textAddrAlarm"
+        android:text="City*:"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF" />
+
+    <EditText
+        android:id="@+id/editCity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/city"
+        android:layout_alignRight="@+id/textAddrAlarm"
+        android:layout_below="@+id/city"
+        android:ems="10" />
+
+    <TextView
+        android:id="@+id/textCityAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/state"
+        android:layout_alignRight="@+id/textAddrAlarm"
+        android:layout_below="@+id/editCity"
+        android:text="This filed is required."
+        android:textColor="#FF0000"
+        android:visibility="invisible"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/editCity"
+        android:layout_below="@+id/textCityAlarm"
+        android:text="State*:"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF" />
+
+    <TextView
+        android:id="@+id/textStateAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/spinnerState"
+        android:layout_alignRight="@+id/textCityAlarm"
+        android:layout_below="@+id/spinnerState"
+        android:text="This filed is required."
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#FF0000"
+        android:visibility="invisible" />
+
+    <Spinner
+        android:id="@+id/spinnerState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/state"
+        android:layout_alignRight="@+id/textCityAlarm"
+        android:layout_below="@+id/state" />
+
+    <TextView
+        android:id="@+id/textNoRst"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/spinnerState"
+        android:layout_alignRight="@+id/textStateAlarm"
+        android:layout_below="@+id/btnSearch"
+        android:layout_marginTop="27dp"
+        android:text="No exact match found--Verify that the given address is correct."
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/btnSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/spinnerState"
+        android:layout_below="@+id/textStateAlarm"
+        android:layout_marginLeft="21dp"
+        android:onClick="Validate"
+        android:text="Search" />
+
+    <ImageView
+        android:id="@+id/imglog"
+        android:layout_width="100dp"
+        android:layout_height="35dp"
+        android:layout_alignBottom="@+id/btnSearch"
+        android:layout_alignRight="@+id/title"
+        android:scaleType="fitCenter"
+        android:src="@drawable/zillow_logo" />
+
+</RelativeLayout>

@@ -1,0 +1,537 @@
+package com.example.hw9;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
+import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.inputmethodservice.Keyboard.Row;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
+import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextSwitcher;
+import android.widget.TextView;
+import android.widget.ViewSwitcher.ViewFactory;
+
+public class ResultActivity extends FragmentActivity implements ActionBar.TabListener {
+	private String homedetails;
+	private String street;
+	private String city;
+	private String state;
+	private String zipcode;
+	private String useCode;
+	private String lastSoldPrice;
+	private String yearBuilt;
+	private String lastSoldDate;
+	private String lotSizeSqFt;
+	private String estimateLastUpdate;
+	private String estimateAmount;
+	private String finishedSqFt;
+	private String estimateValueChangeSign;
+	private String estimateValueChange;
+	private String bathrooms;
+	private String estimateValuationRangeLow;
+	private String estimateValuationRangeHigh;
+	private String bedrooms;
+	private String restimateLastUpdate;
+	private String restimateAmount;
+	private String taxAssessmentYear;
+	private String restimateValueChangeSign;
+	private String restimateValueChange;
+	private String taxAssessment;
+	private String restimateValuationRangeLow;
+	private String restimateValuationRangeHigh;
+	//private String imgn;
+	//private String imgp;
+	private String year1;
+	private String years5;
+	private String years10;
+	private ArrayList<Bitmap> bitmapList;
+	
+	//private ImageSwitcher imgSwitcher;
+	//private TextSwitcher textSwitcher;
+	//private Button btnPre;
+	//private Button btnNext;
+	
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setTitle("Results from Zillow");
+        setContentView(R.layout.activity_result);
+
+        //create Tab
+        final ActionBar actionBar=getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        addTabs(actionBar);
+        
+        //parse JSON
+        Intent intent = this.getIntent();
+        String result = intent.getStringExtra("JSON");
+        parseResults(result);
+        
+        //show result
+        showResults();
+        
+        //get Picture
+        parseCharts();
+    }
+    
+    private void addTabs(ActionBar actionBar){
+        ActionBar.Tab tab1=actionBar.newTab();
+        tab1.setText(R.string.tab1);
+        tab1.setTabListener(this);
+
+        ActionBar.Tab tab2=actionBar.newTab();
+        tab2.setText(R.string.tab2);
+        tab2.setTabListener(this);
+
+        actionBar.addTab(tab1);
+        actionBar.addTab(tab2);
+    }
+	
+    //parse JSON function
+    private void parseResults(String result){
+    	try {
+			JSONObject jObject = new JSONObject(result);
+			
+			homedetails = jObject.getString("homedetails");
+			street = jObject.getString("street");
+			city = jObject.getString("city");
+			state = jObject.getString("state");
+			zipcode = jObject.getString("zipcode");
+			useCode = jObject.getString("useCode");
+			lastSoldPrice = jObject.getString("lastSoldPrice");
+			yearBuilt = jObject.getString("yearBuilt");
+			lastSoldDate = jObject.getString("lastSoldDate");
+			lotSizeSqFt = jObject.getString("lotSizeSqFt");
+			estimateLastUpdate = jObject.getString("estimateLastUpdate");
+			estimateAmount = jObject.getString("estimateAmount");
+			finishedSqFt = jObject.getString("finishedSqFt");
+			estimateValueChangeSign = jObject.getString("estimateValueChangeSign");
+			estimateValueChange = jObject.getString("estimateValueChange");
+			bathrooms = jObject.getString("bathrooms");
+			estimateValuationRangeLow = jObject.getString("estimateValuationRangeLow");
+			estimateValuationRangeHigh = jObject.getString("estimateValuationRangeHigh");
+			bedrooms = jObject.getString("bedrooms");
+			restimateLastUpdate = jObject.getString("restimateLastUpdate");
+			restimateAmount = jObject.getString("restimateAmount");
+			taxAssessmentYear = jObject.getString("taxAssessmentYear");
+			restimateValueChangeSign = jObject.getString("restimateValueChangeSign");
+			restimateValueChange = jObject.getString("restimateValueChange");
+			taxAssessment = jObject.getString("taxAssessment");
+			restimateValuationRangeLow = jObject.getString("restimateValuationRangeLow");
+			restimateValuationRangeHigh = jObject.getString("restimateValuationRangeHigh");
+			//imgn = jObject.getString("imgn");
+			//imgp = jObject.getString("imgp");
+			year1 = jObject.getJSONObject("year1").getString("url");
+			years5 = jObject.getJSONObject("years5").getString("url");
+			years10 = jObject.getJSONObject("years10").getString("url");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+   
+  //get Pictures From url
+    private void parseCharts(){
+    	DownloadImgTask myTask = new DownloadImgTask();
+    	myTask.execute(year1);
+    	myTask.execute(years5);
+    	myTask.execute(years10);
+    	//myTask.execute(imgn);
+    	//myTask.execute(imgp);
+    }
+    
+    //set visibility
+    private void setLayoutVisible(boolean bRst){
+    	ScrollView sView = (ScrollView)findViewById(R.id.scrollViewRst);
+    	TextSwitcher textSwitcher = (TextSwitcher)findViewById(R.id.textSwitcher);
+    	ImageSwitcher imgSwitcher = (ImageSwitcher)findViewById(R.id.imgSwitcher);
+    	Button btnPre = (Button)findViewById(R.id.btnPre);
+    	Button btnNext = (Button)findViewById(R.id.btnNext);
+    	if(bRst == true){
+    		//Show Rst Table
+    		sView.setVisibility(View.VISIBLE);
+    		textSwitcher.setVisibility(View.INVISIBLE);
+    		imgSwitcher.setVisibility(View.INVISIBLE);
+    		btnPre.setVisibility(View.INVISIBLE);
+    		btnNext.setVisibility(View.INVISIBLE);
+    	}
+    	else{
+    		//Show chart
+    		sView.setVisibility(View.INVISIBLE);
+    		textSwitcher.setVisibility(View.VISIBLE);
+    		imgSwitcher.setVisibility(View.VISIBLE);
+    		btnPre.setVisibility(View.VISIBLE);
+    		btnNext.setVisibility(View.VISIBLE);
+    	}
+    }
+    //Show results
+    private void showResults(){
+    	//set visible
+    	setLayoutVisible(true);
+    	
+    	TableLayout rstTable = (TableLayout)findViewById(R.id.tableRst);
+    	TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.WRAP_CONTENT);
+    	//Row 1
+    	TableRow tb1 = new TableRow(null);
+    	tb1.setLayoutParams(lp);
+    	TextView text = new TextView(null);
+    	text.setGravity(Gravity.RIGHT);
+    	text.setText("See more details on Zillows:");
+    	Button share = new Button(null);
+    	share.setText("share");
+    	tb1.addView(text);
+    	tb1.addView(share);
+    	rstTable.addView(tb1);
+    	//Row 2
+    	TableRow tb2 = new TableRow(null);
+    	tb2.setLayoutParams(lp);
+    	TextView link = new TextView(null);
+    	String html = street + ", " + city + ", " + state + "-" + zipcode;
+    	html += homedetails;
+    	link.setText(html);
+    	link.setAutoLinkMask(Linkify.ALL);
+    	link.setMovementMethod(LinkMovementMethod.getInstance()); 
+    	link.setGravity(Gravity.RIGHT);
+    	tb2.addView(link);
+    	rstTable.addView(tb2);
+    	//Row3 useCode
+    	TableRow tb3 = new TableRow(null);
+    	TextView typeTittle = new TextView(null);
+    	typeTittle.setText("Property Type");
+    	typeTittle.setGravity(Gravity.RIGHT);
+    	TextView type = new TextView(null);
+    	type.setText(useCode);
+    	type.setGravity(Gravity.LEFT);
+    	tb3.addView(typeTittle);
+    	tb3.addView(type);
+    	rstTable.addView(tb3);
+    	//Row 4 yearBuilt
+    	TableRow tb4 = new TableRow(null);
+    	TextView yearBuildTitle = new TextView(null);
+    	yearBuildTitle.setText("Year Built");
+    	yearBuildTitle.setGravity(Gravity.RIGHT);
+    	TextView yearBuildText = new TextView(null);
+    	yearBuildText.setText(yearBuilt);
+    	yearBuildText.setGravity(Gravity.LEFT);
+    	tb4.addView(yearBuildTitle);
+    	tb4.addView(yearBuildText);
+    	rstTable.addView(tb4);
+    	//Row 5 lotSizeSqFt
+    	TableRow tb5 = new TableRow(null);
+    	TextView sizeTittle = new TextView(null);
+    	sizeTittle.setText("Lot Size");
+    	sizeTittle.setGravity(Gravity.RIGHT);
+    	TextView size = new TextView(null);
+    	size.setText(lotSizeSqFt);
+    	size.setGravity(Gravity.LEFT);
+    	tb5.addView(sizeTittle);
+    	tb5.addView(size);
+    	rstTable.addView(tb5);
+    	//Row 6 finished area
+    	TableRow tb6 = new TableRow(null);
+    	TextView finishedTittle = new TextView(null);
+    	finishedTittle.setText("Finished Area");
+    	finishedTittle.setGravity(Gravity.RIGHT);
+    	TextView finished = new TextView(null);
+    	finished.setText(finishedSqFt);
+    	finished.setGravity(Gravity.LEFT);
+    	tb6.addView(finishedTittle);
+    	tb6.addView(finished);
+    	rstTable.addView(tb6);
+    	//Row 7  Bathrooms
+    	TableRow tb7 = new TableRow(null);
+    	TextView bathroomsTittle = new TextView(null);
+    	bathroomsTittle.setText("Bathrooms");
+    	bathroomsTittle.setGravity(Gravity.RIGHT);
+    	TextView bathroom = new TextView(null);
+    	bathroom.setText(bathrooms);
+    	bathroom.setGravity(Gravity.LEFT);
+    	tb7.addView(bathroomsTittle);
+    	tb7.addView(bathroom);
+    	rstTable.addView(tb7);
+    	//Row 8 bedroom
+    	TableRow tb8 = new TableRow(null);
+    	TextView bedroomsTittle = new TextView(null);
+    	bedroomsTittle.setText("Bedrooms");
+    	bedroomsTittle.setGravity(Gravity.RIGHT);
+    	TextView bedroom = new TextView(null);
+    	bedroom.setText(bedrooms);
+    	bedroom.setGravity(Gravity.LEFT);
+    	tb8.addView(bedroomsTittle);
+    	tb8.addView(bedroom);
+    	rstTable.addView(tb8);
+    	//Row 9 taxAssessmentYear
+    	TableRow tb9 = new TableRow(null);
+    	TextView taxYearTittle = new TextView(null);
+    	taxYearTittle.setText("Tax Assessment Year");
+    	taxYearTittle.setGravity(Gravity.RIGHT);
+    	TextView taxYear = new TextView(null);
+    	taxYear.setText(taxAssessmentYear);
+    	taxYear.setGravity(Gravity.LEFT);
+    	tb9.addView(taxYearTittle);
+    	tb9.addView(taxYear);
+    	rstTable.addView(tb9);
+    	//Row 10 taxAssessment
+    	TableRow tb10 = new TableRow(null);
+    	TextView taxTittle = new TextView(null);
+    	taxTittle.setText("Tax Assessment");
+    	taxTittle.setGravity(Gravity.RIGHT);
+    	TextView tax = new TextView(null);
+    	tax.setText(taxAssessment);
+    	tax.setGravity(Gravity.LEFT);
+    	tb10.addView(taxTittle);
+    	tb10.addView(tax);
+    	rstTable.addView(tb10);
+    	//Row 11 lastSoldPrice
+    	TableRow tb11 = new TableRow(null);
+    	TextView lastSoldTittle = new TextView(null);
+    	lastSoldTittle.setText("Last Sold Price");
+    	lastSoldTittle.setGravity(Gravity.RIGHT);
+    	TextView lastPrice = new TextView(null);
+    	lastPrice.setText(lastSoldPrice);
+    	lastPrice.setGravity(Gravity.LEFT);
+    	tb11.addView(lastSoldTittle);
+    	tb11.addView(lastPrice);
+    	rstTable.addView(tb11);
+    	//Row 12 lastPriceDate
+    	TableRow tb12 = new TableRow(null);
+    	TextView lastSoldDateTittle = new TextView(null);
+    	lastSoldDateTittle.setText("Last Sold Date");
+    	lastSoldDateTittle.setGravity(Gravity.RIGHT);
+    	TextView lastPriceDateText = new TextView(null);
+    	lastPriceDateText.setText(lastSoldDate);
+    	lastPriceDateText.setGravity(Gravity.LEFT);
+    	tb12.addView(lastSoldDateTittle);
+    	tb12.addView(lastPriceDateText);
+    	rstTable.addView(tb12);
+    	//Row 13 estimateAmount
+    	TableRow tb13 = new TableRow(null);
+    	TextView estimateUpdateTittle = new TextView(null);
+    	estimateUpdateTittle.setText("Zestimate " + R.string.rightSymbol + " Property Estimate as of " + estimateLastUpdate);
+    	estimateUpdateTittle.setGravity(Gravity.RIGHT);
+    	TextView estimateUpdate = new TextView(null);
+    	estimateUpdate.setText(estimateAmount);
+    	estimateUpdate.setGravity(Gravity.LEFT);
+    	tb13.addView(estimateUpdateTittle);
+    	tb13.addView(estimateUpdate);
+    	rstTable.addView(tb13);
+    	//Row 14 estimateValueChange
+    	TableRow tb14 = new TableRow(null);
+    	TextView allChangeTittle = new TextView(null);
+    	allChangeTittle.setText("30 Days Overall Change");
+    	allChangeTittle.setGravity(Gravity.RIGHT);
+    	ImageView valueChangeImg = new ImageView(null);
+    	if(estimateValueChangeSign.equals("+")){
+    		valueChangeImg.setImageResource(R.drawable.up_g);
+    	}
+    	else{
+    		valueChangeImg.setImageResource(R.drawable.down_r);
+    	}  	
+    	TextView allChange = new TextView(null);
+    	allChange.setText(estimateValueChange);
+    	allChange.setGravity(Gravity.LEFT);
+    	tb14.addView(allChangeTittle);
+    	tb14.addView(valueChangeImg);
+    	tb14.addView(allChange);
+    	rstTable.addView(tb14);
+    	//Row 15 
+    	TableRow tb15 = new TableRow(null);
+    	TextView propertyChangeTittle = new TextView(null);
+    	propertyChangeTittle.setText("All Time Property Change");
+    	propertyChangeTittle.setGravity(Gravity.RIGHT);
+    	TextView propertyChange = new TextView(null);
+    	propertyChange.setText(estimateValuationRangeLow + " - " + estimateValuationRangeHigh);
+    	propertyChange.setGravity(Gravity.LEFT);
+    	tb15.addView(propertyChangeTittle);
+    	tb15.addView(propertyChange);
+    	rstTable.addView(tb15);
+    	//Row 16
+    	TableRow tb16 = new TableRow(null);
+    	TextView rentUpdateTittle = new TextView(null);
+    	rentUpdateTittle.setText("Rent Zestimate " + R.string.rightSymbol + " Values as of " + restimateLastUpdate);
+    	rentUpdateTittle.setGravity(Gravity.RIGHT);
+    	TextView rentUpdate = new TextView(null);
+    	rentUpdate.setText(restimateAmount);
+    	rentUpdate.setGravity(Gravity.LEFT);
+    	tb16.addView(rentUpdateTittle);
+    	tb16.addView(rentUpdate);
+    	rstTable.addView(tb16);
+    	//Row 17 estimateValueChange
+    	TableRow tb17 = new TableRow(null);
+    	TextView rentTittle = new TextView(null);
+    	rentTittle.setText("30 Days Rent Change");
+    	rentTittle.setGravity(Gravity.RIGHT);
+    	ImageView rentImg = new ImageView(null);
+    	if(restimateValueChangeSign.equals("+")){
+    		rentImg.setImageResource(R.drawable.up_g);
+    	}
+    	else{
+    		rentImg.setImageResource(R.drawable.down_r);
+    	}  	
+    	TextView rent = new TextView(null);
+    	rent.setText(restimateValueChange);
+    	rent.setGravity(Gravity.LEFT);
+    	tb17.addView(rentTittle);
+    	tb17.addView(rentImg);
+    	tb17.addView(rent);
+    	rstTable.addView(rent);
+    	//Row 18 
+    	TableRow tb18 = new TableRow(null);
+    	TextView rentChangeTittle = new TextView(null);
+    	rentChangeTittle.setText("All Time Rent Change");
+    	rentChangeTittle.setGravity(Gravity.RIGHT);
+    	TextView rentChange = new TextView(null);
+    	rentChange.setText(restimateValuationRangeLow + " - " + restimateValuationRangeHigh);
+    	rentChange.setGravity(Gravity.LEFT);
+    	tb18.addView(rentChangeTittle);
+    	tb18.addView(rentChange);
+    	rstTable.addView(tb18);
+    }
+    
+    //Show Charts
+    private void showCharts(){
+    	//set visibility
+    	setLayoutVisible(false);
+    	
+    	//
+    	TextSwitcher textSwitcher = (TextSwitcher)findViewById(R.id.textSwitcher);
+    	ImageSwitcher imgSwitcher = (ImageSwitcher)findViewById(R.id.imgSwitcher);
+    	
+    	// set Image Switcher
+    	imgSwitcher.setFactory(new ViewFactory() {
+			
+			@Override
+			public View makeView() {
+				// TODO Auto-generated method stub
+				ImageView imageView=new ImageView(ResultActivity.this);  
+                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);  
+                imageView.setLayoutParams(new ImageSwitcher.LayoutParams(ImageSwitcher.LayoutParams.WRAP_CONTENT,ImageSwitcher.LayoutParams.WRAP_CONTENT));  
+                  
+                return imageView; 
+			}
+		});
+    	
+    	imgSwitcher.setImageDrawable(new BitmapDrawable(bitmapList.get(0)));
+    	
+    	//set Text Switcher
+    	textSwitcher.setFactory(new ViewFactory() {
+			
+			@Override
+			public View makeView() {
+				// TODO Auto-generated method stub
+				TextView textView = new TextView(ResultActivity.this);
+				textView.setGravity(Gravity.CENTER);
+				return textView;
+			}
+		});
+    	
+    	textSwitcher.setText("Historical Zestimate for the past 1 year\n" + street + ", " + city + ", " + state + "-" + zipcode);
+    }
+
+    private int currentIndex = 0;
+    //click previous
+    public void onLeft(View v){
+    	TextSwitcher textSwitcher = (TextSwitcher)findViewById(R.id.textSwitcher);
+    	ImageSwitcher imgSwitcher = (ImageSwitcher)findViewById(R.id.imgSwitcher);
+    	Button btnPre = (Button)findViewById(R.id.btnPre);
+    	String[] year = new String[] {"1 year", "5 years", "10 years"};
+    	if(currentIndex == 0){
+    		currentIndex = 2;
+    	}
+    	else{
+    		currentIndex --;
+    	}
+    	imgSwitcher.setImageDrawable(new BitmapDrawable(bitmapList.get(currentIndex)));
+    	textSwitcher.setText("Historical Zestimate for the past " + year[currentIndex] + "\n" + street + ", " + city + ", " + state + "-" + zipcode);
+    }
+    
+    //click next
+    public void onRight(View v){
+    	TextSwitcher textSwitcher = (TextSwitcher)findViewById(R.id.textSwitcher);
+    	ImageSwitcher imgSwitcher = (ImageSwitcher)findViewById(R.id.imgSwitcher);
+    	Button btnNext = (Button)findViewById(R.id.btnNext);
+    	String[] year = new String[] {"1 year", "5 years", "10 years"};
+    	if(currentIndex == 2){
+    		currentIndex = 0;
+    	}
+    	else{
+    		currentIndex ++;
+    	}
+    	imgSwitcher.setImageDrawable(new BitmapDrawable(bitmapList.get(currentIndex)));
+    	textSwitcher.setText("Historical Zestimate for the past " + year[currentIndex] + "\n" + street + ", " + city + ", " + state + "-" + zipcode);
+    }
+    
+    private class DownloadImgTask extends AsyncTask<String, Void, Bitmap>{
+
+		@Override
+		protected Bitmap doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			Bitmap bmp = null;
+			try {
+				URL ulrn = new URL(params[0]);
+				HttpURLConnection con = (HttpURLConnection)ulrn.openConnection();
+	            InputStream is = con.getInputStream();
+	            bmp = BitmapFactory.decodeStream(is);
+	            if (null != bmp){
+	                return bmp;
+	            }
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch(Exception e){
+				e.printStackTrace();
+			}
+			return bmp;
+		}
+		
+		@Override
+		protected void onPostExecute(Bitmap result){
+			bitmapList.add(result);
+		}
+    	
+    }
+    
+	@Override
+	public void onTabReselected(Tab arg0, FragmentTransaction arg1) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void onTabSelected(Tab arg0, FragmentTransaction arg1) {
+		// TODO Auto-generated method stub	
+	}
+
+	@Override
+	public void onTabUnselected(Tab arg0, FragmentTransaction arg1) {
+		// TODO Auto-generated method stub	
+	}
+
+}

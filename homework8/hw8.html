@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<style type="text/css">
+			.uniColor{color: #E1A858;}
+			label.error { color: red; text-align: right;}
+			button {background-color: #E1A858;}
+			td.left{text-align: left;}
+ 			td.right{text-align: right;}
+ 			a.noUnderScorce{text-decoration: blink;color:#E1A858;}
+ 			tr.bgGray{background-color: #FAFAFA;}
+ 			tr.bgWhite{background-color: white;}
+ 			div.tabDiv{background-color:white; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;padding:2%;}
+ 			div.captionDiv{text-align: left;background-image: radial-gradient(circle,#9A9A9A,#767676);opacity: 0.4;padding: 10px;font-size: 16px;position: relative;margin-left: 10px;margin-right: 10px;bottom: 5px;left: 0px;}
+ 			.nav-tabs>li>a,.nav-tabs>li>a:hover{background-color: #A76D2D;color: white;border-color: #A76D2D;}
+ 			div#sharebtn{background-color: #52689C; border-radius: 5px; color: white; font-family: sans-serif; width: 80%; font-size: 14px;padding: 5px;}
+ 			.carousel-indicators {text-align: right;}
+ 			.carousel-indicators .active {background-color:#E1A858;}
+ 			.carousel-indicators li{border:1px solid #E1A858;}
+		</style>
+		
+	</head>
+	<body background="http://www.neovisual.cz/files/V0779-d9.jpg">
+		<div id="fb-root"></div>
+		
+		<div class="container">
+			<h2><small class="uniColor">Search Your Property Here</small></h2>
+			<br>
+			<form class="form-horizontal col-md-10" role="form" id="detailform" method="post" action="hw8.php">
+				<div class="form-group col-md-5 form-group-sm" style="text-align:right;">
+					<label class="control-label col-md-6 uniColor" for="address">Street Address*:</label>
+					<div class="col-md-6">
+						<input class="form-control" name = "address" id="address" placeholder="Address" required>
+					</div>	
+				</div>
+				<div class="form-group col-md-3 form-group-sm" style="text-align:right;">
+					<label class="control-label col-md-4 uniColor" for="city">City*:</label>
+					<div class="col-md-8">
+						<input class="form-control" name = "city" id="city" placeholder="City" required>
+					</div>			
+				</div>
+				<div class="form-group col-md-3 form-group-sm" style="text-align:right;">
+					<label class="control-label col-md-4 uniColor" for="state">State*:</label>
+					<div class="col-md-8">
+						<select class="form-control" id="state" name = "state" required>
+							<option value="">--</option>
+	 						<option value="AK">AK</option>
+							<option value="AL">AL</option>
+							<option value="AR">AR</option>
+							<option value="AZ">AZ</option>
+							<option value="CA">CA</option>
+							<option value="CO">CO</option>
+							<option value="CT">CT</option>
+							<option value="DC">DC</option>
+							<option value="DE">DE</option>
+							<option value="FL">FL</option>
+							<option value="GA">GA</option>
+							<option value="HI">HI</option>
+							<option value="IA">IA</option>
+							<option value="ID">ID</option>
+							<option value="IL">IL</option>
+							<option value="IN">IN</option>
+							<option value="KS">KS</option>
+							<option value="KY">KY</option>
+							<option value="LA">LA</option>
+							<option value="MA">MA</option>
+							<option value="MD">MD</option>
+							<option value="ME">ME</option>
+							<option value="MI">MI</option>
+							<option value="MN">MN</option>
+							<option value="MO">MO</option>
+							<option value="MS">MS</option>
+							<option value="MT">MT</option>
+							<option value="NC">NC</option>
+							<option value="ND">ND</option>
+							<option value="NE">NE</option>
+							<option value="NH">NH</option>
+							<option value="NJ">NJ</option>
+							<option value="NM">NM</option>
+							<option value="NV">NV</option>
+							<option value="NY">NY</option>
+							<option value="OH">OH</option>
+							<option value="OK">OK</option>
+							<option value="OR">OR</option>
+							<option value="PA">PA</option>
+							<option value="RI">RI</option>
+							<option value="SC">SC</option>
+							<option value="SD">SD</option>
+							<option value="TN">TN</option>
+							<option value="TX">TX</option>
+							<option value="UT">UT</option>
+							<option value="VT">VT</option>
+							<option value="VA">VA</option>
+							<option value="WA">WA</option>
+							<option value="WI">WI</option>
+							<option value="WV">WV</option>
+							<option value="WY">WY</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-md-1">
+					<button type = "submit" class="btn" id="submit">Submit</button>
+				</div>
+			</form>
+			<div class="col-md-2">
+				<img src="http://www.zillow.com/widgets/GetVersionedResource.htm?path=/static/logos/Zillowlogo_150x40_rounded.gif" width="150" height="40" alt="Zillow Real Estate Search" class="img-responsive"/>
+			</div>
+			<br>
+			<div id="rst" class="col-md-12">
+			</div>
+		</div>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+		<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script src="jquery-validation/lib/jquery.js"></script>
+		<script src="jquery-validation/dist/jquery.validate.js"></script>
+		<script type="text/javascript" src="hw8.js"></script>
+		<noscript>
+	</body>
+</html>

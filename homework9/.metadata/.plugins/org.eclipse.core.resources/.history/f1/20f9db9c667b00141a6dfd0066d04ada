@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <corners android:radius="3dp" />
+
+    <padding
+        android:bottom="10dp"
+        android:left="10dp"
+        android:right="10dp"
+        android:top="10dp" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Post to Facebook"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/btnCal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:text="Cancel" />
+
+        <Button
+            android:id="@+id/btnPost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Post Property Details" />
+    </LinearLayout>
+
+</LinearLayout>
